@@ -1,27 +1,25 @@
-
 import React, { useState } from "react";
-import { Todo } from "../model";
+import { TodoContextType } from "../model";
+import { TodoContext } from "./context";
 
-interface Props {
-  todos: Todo[];
-  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
-  filter: Todo[];
-}
-
-const Todolist: React.FC<Props> = ({ todos, setTodos, filter }) => {
-
+function Todolist() {
   const [edit, setEdit] = useState<number | null>(null);
   const [editTodo, setEditTodo] = useState("");
-
+  const { todos, setTodos, filter } = React.useContext(
+    TodoContext
+  ) as TodoContextType;
   console.log(edit);
+  console.log(todos);
+  console.log(setTodos);
+  console.log(filter);
 
   const DeleteItem = (id: number) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
+    setTodos(todos.filter((todo: any) => todo.id !== id));
   };
 
   const ToggleItem = (id: number) => {
     setTodos(
-      todos.map((todo) =>
+      todos.map((todo: any) =>
         todo.id === id ? { ...todo, isCompleted: !todo.isCompleted } : todo
       )
     );
@@ -29,10 +27,9 @@ const Todolist: React.FC<Props> = ({ todos, setTodos, filter }) => {
 
   const EditItem = (id: number, editTodo: string) => {
     setEdit(id);
-   
+
     if (id === edit) {
-   
-      let editList = todos.map((todo) => {
+      let editList = todos.map((todo: any) => {
         if (edit) {
           if (todo.id === id) {
             return {
@@ -44,7 +41,7 @@ const Todolist: React.FC<Props> = ({ todos, setTodos, filter }) => {
         //console.log(todo);
         return todo;
       });
-      
+
       setTodos(editList);
       setEditTodo("");
       setEdit(null);
@@ -53,7 +50,7 @@ const Todolist: React.FC<Props> = ({ todos, setTodos, filter }) => {
 
   return (
     <>
-      {filter.map((todo) => (
+      {filter.map((todo: any) => (
         <div>
           <li className="eachitem">
             <input
@@ -79,29 +76,28 @@ const Todolist: React.FC<Props> = ({ todos, setTodos, filter }) => {
               </span>
             )}
 
-          
-              <button
-                style={{ border: "none" }}
-                name="edit"
-                className={edit === todo.id ? "save" : "edit"}
-                onClick={() => EditItem(todo.id, editTodo)}
-              >
-                {edit === todo.id ? "SAVE" : "EDIT"}
-              </button>
+            <button
+              style={{ border: "none" }}
+              name="edit"
+              className={edit === todo.id ? "save" : "edit"}
+              onClick={() => EditItem(todo.id, editTodo)}
+            >
+              {edit === todo.id ? "SAVE" : "EDIT"}
+            </button>
 
-              <button className="Del"
-                onClick={() => {
-                  DeleteItem(todo.id);
-                }}
-              >
-               X
-              </button>
-            
+            <button
+              className="Del"
+              onClick={() => {
+                DeleteItem(todo.id);
+              }}
+            >
+              X
+            </button>
           </li>
         </div>
       ))}
     </>
   );
-};
+}
 
 export default Todolist;
